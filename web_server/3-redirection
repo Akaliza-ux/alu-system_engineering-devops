@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# Install nginx if not installed
+apt-get update -y
+apt-get install nginx -y
+
+# Create redirect page
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Configure redirection
+sed -i 's|location / {|location / {\n\trewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;|' /etc/nginx/sites-available/default
+
+# Restart nginx
+service nginx restart
+
