@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Install nginx
+apt-get update -y
+apt-get install nginx -y
+
+# Create custom page
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Start nginx
+service nginx start
+
