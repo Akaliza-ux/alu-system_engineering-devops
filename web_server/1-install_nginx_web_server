@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Installs and configures Nginx to serve a Holberton School page.
+
+apt-get -y update
+apt-get -y install nginx
+echo "Holberton School for the win!" > /var/www/html/index.html
+service nginx start
