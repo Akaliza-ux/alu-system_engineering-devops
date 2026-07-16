@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Installs and configures Nginx with a custom response header.
+# shellcheck disable=SC2154
+
+apt-get -y update
+apt-get -y install nginx
+
+echo "add_header X-Served-By $HOSTNAME;" > /etc/nginx/conf.d/custom_header.conf
+
+service nginx restart
