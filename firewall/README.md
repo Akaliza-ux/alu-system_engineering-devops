@@ -1,1 +1,1 @@
-UFW firewall configuration.
+UFW firewall configuration for web-01.
