@@ -1,19 +1,37 @@
 #!/usr/bin/env bash
-# Configure Nginx to listen on port 8080 and run as nginx.
+# Runs Nginx as the nginx user and listens on port 8080.
 
 if ! id nginx >/dev/null 2>&1; then
     useradd -r -s /usr/sbin/nologin nginx
 fi
 
 pkill nginx || true
+sleep 1
 
-sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
-sed -i 's/listen \[::\]:80 default_server;/listen [::]:8080 default_server;/' /etc/nginx/sites-available/default
-sed -i 's/^user .*/user nginx;/' /etc/nginx/nginx.conf
-sed -i 's|^pid .*;|pid /tmp/nginx.pid;|' /etc/nginx/nginx.conf
+cat > /tmp/nginx.conf <<'EOF'
+pid /tmp/nginx.pid;
+error_log /tmp/nginx-error.log notice;
 
-mkdir -p /var/lib/nginx /var/cache/nginx /var/log/nginx
-chown -R nginx:nginx /var/lib/nginx /var/cache/nginx /var/log/nginx
+events {
+    worker_connections 128;
+}
 
-nginx -t
-su -s /bin/sh nginx -c "nginx"
+http {
+    access_log /tmp/nginx-access.log;
+
+    server {
+        listen 8080;
+        server_name _;
+
+        location / {
+            return 200 "OK\n";
+        }
+    }
+}
+EOF
+
+rm -f /tmp/nginx.pid /tmp/nginx-error.log /tmp/nginx-access.log
+touch /tmp/nginx-error.log /tmp/nginx-access.log
+chown nginx:nginx /tmp/nginx-error.log /tmp/nginx-access.log
+
+su -s /bin/sh nginx -c "nginx -t -c /tmp/nginx.conf && nginx -c /tmp/nginx.conf"
