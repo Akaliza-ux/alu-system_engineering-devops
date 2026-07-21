@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 # Runs Nginx as the nginx user and listens on port 8080.
 
 if ! id nginx >/dev/null 2>&1; then
