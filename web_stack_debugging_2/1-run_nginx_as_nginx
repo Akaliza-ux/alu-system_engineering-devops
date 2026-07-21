@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Configure Nginx to listen on port 8080 and run as nginx.
+
+if ! id nginx >/dev/null 2>&1; then
+    useradd -r -s /usr/sbin/nologin nginx
+fi
+
+pkill nginx || true
+
+sed -i 's/listen 80 default_server;/listen 8080 default_server;/' /etc/nginx/sites-available/default
+sed -i 's/listen \[::\]:80 default_server;/listen [::]:8080 default_server;/' /etc/nginx/sites-available/default
+sed -i 's/^user .*/user nginx;/' /etc/nginx/nginx.conf
+sed -i 's|^pid .*;|pid /tmp/nginx.pid;|' /etc/nginx/nginx.conf
+
+mkdir -p /var/lib/nginx /var/cache/nginx /var/log/nginx
+chown -R nginx:nginx /var/lib/nginx /var/cache/nginx /var/log/nginx
+
+nginx -t
+su -s /bin/sh nginx -c "nginx"
