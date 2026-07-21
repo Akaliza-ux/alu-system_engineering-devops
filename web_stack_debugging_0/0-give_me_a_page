@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Install Apache, serve the required page, and start the web server.
+
+apt-get update
+apt-get install -y apache2
+echo "Hello Holberton" > /var/www/html/index.html
+service apache2 start
