@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Runs Nginx as the nginx user and listens on port 8080.
 
 if ! id nginx >/dev/null 2>&1; then
@@ -35,3 +36,5 @@ touch /tmp/nginx-error.log /tmp/nginx-access.log
 chown nginx:nginx /tmp/nginx-error.log /tmp/nginx-access.log
 
 su -s /bin/sh nginx -c "nginx -t -c /tmp/nginx.conf && nginx -c /tmp/nginx.conf"
+ps auxff | grep '[n]ginx'
+nc -z 0 8080
